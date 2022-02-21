@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+		<RootNamespace>FusionBlog.UI</RootNamespace>
+		<AssemblyName>FusionBlog.UI</AssemblyName>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Blazorise" Version="0.9.5.3" />
+		<PackageReference Include="Blazorise.Bootstrap" Version="0.9.5.3" />
+		<PackageReference Include="Blazorise.DataGrid" Version="0.9.5.3" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.3" />
+		<PackageReference Include="Blazorise.Sidebar" Version="0.9.5.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+		<PackageReference Include="Stl.Fusion.Blazor" Version="2.2.17" />
+		<PackageReference Include="UAParser" Version="3.1.47" />
+		<PackageReference Include="BirdMessenger" Version="2.0.1" />
+	</ItemGroup>
+
+	<!-- Publish & runtime properties -->
+	<PropertyGroup>
+		<RunAOTCompilation>false</RunAOTCompilation>
+		<TrimMode>Link</TrimMode>
+		<PublishTrimmed>true</PublishTrimmed>
+		<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+		<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+		<IsTrimmable>true</IsTrimmable>
+		<BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
+	</PropertyGroup>
+
+	<!-- Extra trimming roots -->
+	<ItemGroup>
+		<TrimmerRootAssembly Include="System.Security.Cryptography.X509Certificates" />
+		<TrimmerRootAssembly Include="System.Text.Json" />
+		<TrimmerRootAssembly Include="System.Collections.Immutable" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\files\" />
+		<Folder Include="wwwroot\files\" />
+	</ItemGroup>
+</Project>

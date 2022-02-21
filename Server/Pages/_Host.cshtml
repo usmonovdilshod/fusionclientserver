@@ -1,0 +1,135 @@
+@page "_Host"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@namespace Templates.TodoApp.Host.Pages
+@using FusionBlog.Server
+@using Microsoft.AspNetCore.Html
+@using Microsoft.Extensions.Options
+@using Microsoft.JSInterop
+@using Stl.Fusion.Blazor
+@using FusionBlog.UI
+@using Stl.Fusion.Server.Authentication
+@using Stl.Fusion.Server.Controllers
+@inject ServerAuthHelper _serverAuthHelper
+@inject HostSettings _hostSettings
+@inject BlazorCircuitContext _blazorCircuitContext
+@inject IOptions<HybridOptions> HybridOptions
+@inject BlazorModeHelper _blazorModeHelper
+@{
+    var hybridType =  HybridType.HybridOnNavigation;
+}
+
+
+@{
+    await _serverAuthHelper.UpdateAuthState(HttpContext);
+    var authSchemas = await _serverAuthHelper.GetSchemas(HttpContext);
+    var sessionId = _serverAuthHelper.Session.Id.Value;
+    var isServerSideBlazor = BlazorModeController.IsServerSideBlazor(HttpContext);
+    var isCloseWindowRequest = _serverAuthHelper.IsCloseWindowRequest(HttpContext, out var closeWindowFlowName);
+    Layout = null;
+
+    async Task<IHtmlContent> getRenderSide(bool _isServerSideBlazor)
+    {
+        using var prerendering = _blazorCircuitContext.Prerendering();
+        var prerenderedApp = await Html.RenderComponentAsync<App>(
+        isServerSideBlazor ? RenderMode.ServerPrerendered : RenderMode.WebAssemblyPrerendered,
+        new { SessionId = sessionId });
+        return prerenderedApp;
+    }
+
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TodoApp: Fusion+Blazor Template</title>
+    <base href="~/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <partial name="Blazorise.Head" />
+    <script src="_content/Stl.Fusion.Blazor/scripts/fusionAuth.js"></script>
+    <script>
+        window.FusionAuth.schemas = "@authSchemas";
+        window.FusionAuth.sessionId = "@sessionId";
+    </script>
+
+</head>
+<body>
+    @if (isCloseWindowRequest)
+    {
+        <script>
+            setTimeout(function () {
+                window.close();
+            }, 500)
+        </script>
+        <div class="alert alert-primary">
+            @(closeWindowFlowName) completed, you can close this window.
+        </div>
+    }
+    else
+    {
+        @if (hybridType.ToString().StartsWith("Hybrid"))
+        {
+            <srvr-app>
+                @await getRenderSide(true)
+            </srvr-app>
+            <wasm-app style="display: none;">
+                <component type="typeof(App)" render-mode="WebAssembly">
+                    @*@await getRenderSide(false)*@
+            </wasm-app>
+        }
+
+        <script>
+            window.hybridType = '@hybridType';
+            window.getHybridType = function () { return window.hybridType; }
+        </script>
+
+        @*<app id="app">
+            @{
+            using var prerendering = _blazorCircuitContext.Prerendering();
+            var prerenderedApp = await Html.RenderComponentAsync<App>(
+            isServerSideBlazor ? RenderMode.ServerPrerendered : RenderMode.WebAssemblyPrerendered,
+            new { SessionId = sessionId });
+            }
+            @(prerenderedApp)
+            </app>*@
+
+       @* @if (hybridType == HybridType.ServerSide)
+        {
+            <app>
+                @await getRenderSide(true)
+            </app>
+            <script src="_framework/blazor.server.js"></script>
+        }
+        else if (hybridType == HybridType.WebAssembly)
+        {
+            <app>
+                @await getRenderSide(false)
+            </app>
+            <script src="_framework/blazor.webassembly.js"></script>
+        }
+        else
+        {*@
+            <script src="/js/blazor.hybrid.js"></script>
+        @*}*@
+
+        <div id="blazor-error-ui">
+            <environment include="Staging,Production">
+                An error has occurred. This application may no longer respond until reloaded.
+            </environment>
+            <environment include="Development">
+                An unhandled exception has occurred. See browser dev tools for details.
+            </environment>
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>
+
+        <partial name="Blazorise.Body" />
+        <script type="module" src="./js/app.js"></script>
+        @*<script src="_framework/blazor.@(isServerSideBlazor ? "server" : "webassembly").js"></script>*@
+        <script src="/js/tus.min.js"></script>
+        
+    }
+</body>
+</html>

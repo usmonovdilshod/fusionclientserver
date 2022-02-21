@@ -1,0 +1,96 @@
+﻿@using BirdMessenger.Collections
+@using FusionBlog.UI.Tus
+@using BirdMessenger
+@using BirdMessenger.Builder
+@inject NavigationManager Navigator
+@inject TusUploadHelper TusUploadHelper
+
+
+
+<InputFile OnChange="(e) => {OnChanged(e);}" maxAllowedSize="" />
+@_percent
+@if (Link is not null)
+{
+    <a href="@Link" target="_blank"> link </a>
+
+
+    @Link
+}
+<span id="downloadLink"></span>
+@code {
+
+
+    string _percent = "0";
+    private string? _link { get; set; }
+    [Parameter]
+    public string? Link
+    {
+        get => _link;
+        set
+        {
+            if (_link == value) return;
+            _link = value;
+            LinkChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> LinkChanged { get; set; }
+    readonly CancellationTokenSource _cancelTokenSource = new();
+
+
+
+    async Task OnChanged(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            _percent = "0";
+            Link = null;
+            var file = e.File;
+            if (file == null)
+            {
+                return;
+            }
+
+            #region Common
+            var metadata = new MetadataCollection
+                {
+                    ["filename"] = file.Name,
+                    ["name"] = file.Name,
+                    ["contentType"] = file.ContentType
+                };
+            #endregion
+
+#pragma warning disable CS4014
+            TusUploadHelper.Upload(file.OpenReadStream(file.Size), metadata, _cancelTokenSource.Token).ConfigureAwait(false);
+#pragma warning restore CS4014
+            TusUploadHelper.UploadProgress += (s) =>
+            {
+                _percent = s;
+                StateHasChanged();
+
+            };
+            TusUploadHelper.Completed += (url) =>
+            {
+                Link = url;
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+
+
+            };
+            TusUploadHelper.HadError += (s) => { System.Console.WriteLine(s.Message); };
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine(exc.Message);
+        }
+        finally
+        {
+            this.StateHasChanged();
+        }
+    }
+
+
+}

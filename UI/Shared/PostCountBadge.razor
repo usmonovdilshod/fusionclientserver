@@ -1,0 +1,19 @@
+@using Color = Blazorise.Color
+@inherits ComputedStateComponent<int>
+@inject Session _session
+@inject IPostService _todos
+@inject ILogger<PostCountBadge> _log
+
+@{
+    _log.LogInformation("Rendering");
+    var summary = State.ValueOrDefault;
+}
+
+<Badge Color="Color.Primary"><b>@summary</b> total</Badge>
+
+@code {
+
+    protected override Task<int> ComputeState(CancellationToken cancellationToken)
+        => _todos.GetPostCount(_session, cancellationToken);
+
+}

@@ -1,0 +1,116 @@
+@page "/todo"
+@using Margin = Blazorise.Margin
+@using Size = Blazorise.Size
+@using Color = Blazorise.Color
+@using ButtonType = Blazorise.ButtonType
+@inherits ComputedStateComponent<Post[]>
+@inject IPostService Posts
+@inject Session Session
+@inject UICommandRunner CommandRunner
+@inject ILogger<TodoPage> Log
+
+@{
+    Log.LogInformation("Rendering, State.Computed.Version = {Version}", State.Computed.Version);
+    var error = State.Error;
+    var posts = State.ValueOrDefault ?? Array.Empty<Post>(); // ValueOrDefault returns default if there is an Error
+}
+
+<h1>Todo List</h1>
+
+<StateOfStateBadge State="@State"/>
+<Div Margin="Margin.Is1.OnY">
+    Updated:
+    <b>
+        <MomentsAgoBadge Value="LastStateUpdateTime"/>
+    </b>
+</Div>
+<Div Margin="Margin.Is1.OnY">
+    Call:
+    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => StateHasChanged()">StateHasChanged()</Button>
+    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => State.Invalidate()">State.Invalidate()</Button>
+    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => State.Recompute()">State.Recompute()</Button>
+</Div>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <SignInDropdown Why="to use this page"/>
+    </NotAuthorized>
+    <Authorized>
+        <WhenException Exception="error"/>
+        <Row>
+            <Column ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnTablet">
+                <Paragraph>
+                    <PostCountBadge/>
+                </Paragraph>
+
+                @foreach (var post in posts)
+                {
+                    <PostItemView @key="@post.Slug" Value="@post"/>
+                }
+
+                @if (HasMore)
+                {
+                    <Button Clicked="_ => LoadMore()" Color="Color.Primary" Margin="Margin.Is3.OnY">
+                        Load @PageSize more <Blazorise.Icon Name="FontAwesomeIcons.AngleDoubleDown"/>
+                    </Button>
+                }
+
+                <Form @onsubmit="Create" Margin="Margin.Is3.OnY">
+                    <Addons>
+                        <Addon AddonType="AddonType.Start">
+                            <Button Type="@ButtonType.Submit" Color="Color.Primary">
+                                <Blazorise.Icon Name="@FontAwesomeIcons.PlusSquare"/>
+                            </Button>
+                        </Addon>
+                        <input @bind="NewPostTitle" @bind:event="onchange" class="form-control"/>
+                        <TusUploader @bind-Link="ImageUrl" ></TusUploader>
+                        
+                    </Addons>
+                </Form>
+            </Column>
+        </Row>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private int PageSize { get; set; } = 5;
+    private bool HasMore { get; set; }
+    private string NewPostTitle { get; set; } = "";
+    private string ImageUrl { get; set; }
+    private IBrowserFile file = null;
+    private DateTime LastStateUpdateTime { get; set; } = DateTime.UtcNow;
+    
+    
+
+    // AuthState property below seemingly does nothing, right?
+    // But try to comment out this line & sign-in + sign-out.
+    // See the error badge stays there for a while now?
+    // Check your explanation on our Discord: https://discord.gg/EKEwv6d
+    [CascadingParameter]
+    protected Task<AuthState> AuthState { get; set; } = null!;
+
+    protected override async Task<Post[]> ComputeState(CancellationToken cancellationToken)
+    {
+        var items = await Posts.List(Session, PageSize + 1, cancellationToken);
+        HasMore = items.Length > PageSize;
+        if (HasMore)
+            items = items[0..PageSize];
+        LastStateUpdateTime = DateTime.UtcNow;
+        return items;
+    }
+
+    private void LoadMore()
+    {
+        PageSize *= 2;
+        State.Recompute();
+    }
+
+    
+
+    private void Create()
+    {
+        var post = new Post(NewPostTitle,DateTime.Now,"ASdasdasd",ImageUrl,null);
+        CommandRunner.Run(new AddOrUpdatePostCommand(Session, post));
+    } 
+
+}

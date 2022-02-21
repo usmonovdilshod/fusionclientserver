@@ -1,0 +1,41 @@
+@using Stl.Text
+@implements IDisposable
+@inject BlazorCircuitContext _blazorCircuitContext
+
+<CascadingAuthState SessionId="@SessionId">
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+</CascadingAuthState>
+@code
+{
+    [Parameter]
+    public string SessionId { get; set; } = Symbol.Empty;
+    [Parameter]
+    public bool IsWasm { get; set; }
+
+    protected override void  OnParametersSet()
+    {
+        System.Console.WriteLine($"IsWasm: {IsWasm}");
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!_blazorCircuitContext.IsPrerendering)
+            _blazorCircuitContext.RootComponent = this;
+    }
+
+    public void Dispose()
+        => _blazorCircuitContext.Dispose();
+
+}
+

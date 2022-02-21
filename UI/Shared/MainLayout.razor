@@ -1,0 +1,101 @@
+﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject NavigationManager Navigator
+@inject UICommandFailureList CommandFailureList
+
+@{
+    var failures = CommandFailureList.Items;
+}
+
+<Layout Sider="true">
+    <RuntimeHeader />
+    <LayoutSider>
+        <LayoutSiderContent>
+            <LeftBar />
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed="true">
+            <TopBar />
+        </LayoutHeader>
+
+        <LayoutContent Padding="Padding.Is4">
+            @foreach (var failure in failures)
+            {
+                <WhenCommandError Exception="failure.Result?.Error"
+                Dismissed="@(_ => CommandFailureList.Remove(failure.CommandId))" />
+            }
+
+            <AuthorizeView>
+                <Authorized>
+                    <p style="color: black;">***I can not see this text either...***</p>
+                </Authorized>
+                <NotAuthorized>
+                    Not auth
+                </NotAuthorized>
+            </AuthorizeView>
+
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        Navigator.LocationChanged += OnLocationChanged;
+        CommandFailureList.Changed += OnCommandFailureListChanged;
+    }
+
+    public void Dispose()
+    {
+        Navigator.LocationChanged -= OnLocationChanged;
+        CommandFailureList.Changed -= OnCommandFailureListChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    => CommandFailureList.Clear();
+
+    private void OnCommandFailureListChanged()
+    => this.StateHasChangedAsync();
+}
+
+
+
+
+@* @inherits LayoutComponentBase *@
+@* *@
+@* <MudThemeProvider/> *@
+@* <MudDialogProvider/> *@
+@* <MudSnackbarProvider/> *@
+@* *@
+@* <MudLayout> *@
+@*     <MudAppBar Elevation="0"> *@
+@*         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/> *@
+@*         <MudSpacer/> *@
+@*         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank"/> *@
+@*         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank"/> *@
+@*     </MudAppBar> *@
+@*     <MudDrawer @bind-Open="_drawerOpen" Elevation="1"> *@
+@*         <MudDrawerHeader> *@
+@*             <MudText Typo="Typo.h6">UI</MudText> *@
+@*         </MudDrawerHeader> *@
+@*         <NavMenu/> *@
+@*     </MudDrawer> *@
+@*     <MudMainContent> *@
+@*         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16"> *@
+@*             @Body *@
+@*         </MudContainer> *@
+@*     </MudMainContent> *@
+@* </MudLayout> *@
+@* *@
+@* @code { *@
+@*     bool _drawerOpen = true; *@
+@* *@
+@*     void DrawerToggle() *@
+@*     { *@
+@*         _drawerOpen = !_drawerOpen; *@
+@*     } *@
+@* *@
+@* } *@

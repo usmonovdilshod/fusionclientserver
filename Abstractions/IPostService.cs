@@ -2,7 +2,7 @@
 
 namespace FusionBlog.Abstractions;
 
-public record AddOrUpdatePostCommand(Session Session, Post Post) : ISessionCommand<Post>
+public record AddOrUpdatePostCommand(Session? Session, Post? Post) : ISessionCommand<Post>
 {
     public AddOrUpdatePostCommand() : this(null!, default!)
     {
@@ -10,23 +10,23 @@ public record AddOrUpdatePostCommand(Session Session, Post Post) : ISessionComma
 
 }
 
-public record RemovePostCommand(Session Session, string Slug) : ISessionCommand<Post>
+public record RemovePostCommand(Session? Session, string? Slug) : ISessionCommand<Post>
 {
     public RemovePostCommand() : this(Session.Null, "")
     {
     }
 }
 
-public record Post(string Title, DateTime Time, string Content, string Image, string? Slug)
+public record Post(string? Title, DateTime Time, string? Content, string? Image, string? Slug)
 {
     public Post() : this(null!, default, null!, null!, null!)
     {
     }
 
-    public Post(string Title) : this(Title, default, null!, null!, null!)
+    public Post(string? Title) : this(Title, default, null!, null!, null!)
     {
     }
-    public Post(string Title, DateTime Time, string Content, string Image) : this(Title, Time, Content, Image,null!)
+    public Post(string Title, DateTime Time, string Content, string? Image) : this(Title, Time, Content, Image,null!)
     {
     }
 

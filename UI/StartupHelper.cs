@@ -9,6 +9,8 @@ using Stl.Fusion.Blazor;
 using Stl.Fusion.Client;
 using Stl.Fusion.Extensions;
 using Stl.Fusion.UI;
+using MudBlazor.Services;
+
 
 namespace FusionBlog.UI;
 
@@ -52,9 +54,6 @@ public static class StartupHelper
         // Option 4: Remote TodoService, SandboxedKeyValueStore, and DbKeyValueStore
         fusionClient.AddReplicaService<IPostService, IPostClientDef>();
 
-
-        
-
         ConfigureSharedServices(services);
     }
 
@@ -69,6 +68,10 @@ public static class StartupHelper
         fusion.AddBlazorUIServices();
         fusion.AddFusionTime();
         fusion.AddBackendStatus();
+
+        services.AddMudServices();
+
+
 
         // Default update delay is 0.5s
         services.AddTransient<IUpdateDelayer>(c => new UpdateDelayer(c.UICommandTracker(), 0.5));

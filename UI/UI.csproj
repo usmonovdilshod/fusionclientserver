@@ -20,6 +20,8 @@
 		<PackageReference Include="Stl.Fusion.Blazor" Version="2.2.17" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="BirdMessenger" Version="2.0.1" />
+		<PackageReference Include="MudBlazor" Version="6.0.6" />
+		<PackageReference Include="MudBlazor.ThemeManager" Version="1.0.6" />
 	</ItemGroup>
 
 	<!-- Publish & runtime properties -->

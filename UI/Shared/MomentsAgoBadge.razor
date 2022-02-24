@@ -14,3 +14,4 @@
     protected override Task<string> ComputeState(CancellationToken cancellationToken)
         => Value.HasValue ? _fusionTime.GetMomentsAgo(Value.Value) : Task.FromResult(None);
 }
+

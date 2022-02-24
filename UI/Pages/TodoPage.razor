@@ -1,8 +1,5 @@
 @page "/todo"
-@using Margin = Blazorise.Margin
-@using Size = Blazorise.Size
-@using Color = Blazorise.Color
-@using ButtonType = Blazorise.ButtonType
+@using MudBlazor
 @inherits ComputedStateComponent<Post[]>
 @inject IPostService Posts
 @inject Session Session
@@ -18,18 +15,18 @@
 <h1>Todo List</h1>
 
 <StateOfStateBadge State="@State"/>
-<Div Margin="Margin.Is1.OnY">
+<div>
     Updated:
     <b>
         <MomentsAgoBadge Value="LastStateUpdateTime"/>
     </b>
-</Div>
-<Div Margin="Margin.Is1.OnY">
+</div>
+<MudButtonGroup >
     Call:
-    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => StateHasChanged()">StateHasChanged()</Button>
-    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => State.Invalidate()">State.Invalidate()</Button>
-    <Button Color="Color.Danger" Size="Size.Small" Clicked="_ => State.Recompute()">State.Recompute()</Button>
-</Div>
+    <MudButton Color="MudBlazor.Color.Error" Size="MudBlazor.Size.Small" Clicked="_ => StateHasChanged()">StateHasChanged()</MudButton>
+    <MudButton Color="MudBlazor.Color.Error" Size="MudBlazor.Size.Small" Clicked="_ => State.Invalidate()">State.Invalidate()</MudButton>
+    <MudButton Color="MudBlazor.Color.Error" Size="MudBlazor.Size.Small" Clicked="_ => State.Recompute()">State.Recompute()</MudButton>
+</MudButtonGroup >
 
 <AuthorizeView>
     <NotAuthorized>
@@ -37,11 +34,11 @@
     </NotAuthorized>
     <Authorized>
         <WhenException Exception="error"/>
-        <Row>
-            <Column ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnTablet">
-                <Paragraph>
+        <MudGrid >
+            <MudItem >
+                <MudText>
                     <PostCountBadge/>
-                </Paragraph>
+                </MudText>
 
                 @foreach (var post in posts)
                 {
@@ -50,25 +47,25 @@
 
                 @if (HasMore)
                 {
-                    <Button Clicked="_ => LoadMore()" Color="Color.Primary" Margin="Margin.Is3.OnY">
-                        Load @PageSize more <Blazorise.Icon Name="FontAwesomeIcons.AngleDoubleDown"/>
-                    </Button>
+                    <MudButton Clicked="_ => LoadMore()" Color="MudBlazor.Color.Primary"  >
+                        Load @PageSize more 
+                    </MudButton>
                 }
 
-                <Form @onsubmit="Create" Margin="Margin.Is3.OnY">
-                    <Addons>
-                        <Addon AddonType="AddonType.Start">
-                            <Button Type="@ButtonType.Submit" Color="Color.Primary">
-                                <Blazorise.Icon Name="@FontAwesomeIcons.PlusSquare"/>
-                            </Button>
-                        </Addon>
-                        <input @bind="NewPostTitle" @bind:event="onchange" class="form-control"/>
+            
+                    <div style="display: flex">
+                       
+                            <MudButton OnClick="Create" Color="MudBlazor.Color.Primary"  >
+                                Send
+                            </MudButton>
+                        
+                        <input @bind="NewPostTitle"  class="form-control"/>
                         <TusUploader @bind-Link="ImageUrl" ></TusUploader>
                         
-                    </Addons>
-                </Form>
-            </Column>
-        </Row>
+                    </div>
+          
+            </MudItem>
+        </MudGrid >
     </Authorized>
 </AuthorizeView>
 

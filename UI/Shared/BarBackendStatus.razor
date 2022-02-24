@@ -1,3 +1,4 @@
+@using MudBlazor
 @using Stl
 @inherits ComputedStateComponent<ImmutableList<(string Backend, Exception Error)>>
 @inject Session _session
@@ -7,21 +8,20 @@
     var errors = State.ValueOrDefault ?? ImmutableList<(string Backend, Exception Error)>.Empty;
 }
 
-@if (errors.Any()) {
-    <BarItem>
-        <BarDropdown Class="@CssClass">
-            <BarDropdownToggle>
-                <BarIcon IconName="@FontAwesomeIcons.ExclamationTriangle" TextColor="TextColor.Danger"></BarIcon>
-            </BarDropdownToggle>
-            <BarDropdownMenu RightAligned="true">
-                @foreach (var (backend, error) in errors) {
-                    <BarDropdownItem TextColor="TextColor.Danger">
-                        <b>@backend:</b> @(error.Message.NullIfEmpty() ?? "Unknown error")
-                    </BarDropdownItem>
-                }
-            </BarDropdownMenu>
-        </BarDropdown>
-    </BarItem>
+@if (errors.Any())
+{
+    
+    <MudItem>
+        <MudMenu Label="Open Menu">
+            @foreach (var (backend, error) in errors)
+            {
+                <MudMenuItem>
+                    <b>@backend:</b> @(error.Message.NullIfEmpty() ?? "Unknown error")
+
+                </MudMenuItem>
+            }
+        </MudMenu>
+    </MudItem>
 }
 
 @code {

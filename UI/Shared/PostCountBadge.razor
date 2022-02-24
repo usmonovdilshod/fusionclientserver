@@ -1,4 +1,4 @@
-@using Color = Blazorise.Color
+@using MudBlazor
 @inherits ComputedStateComponent<int>
 @inject Session _session
 @inject IPostService _todos
@@ -9,7 +9,7 @@
     var summary = State.ValueOrDefault;
 }
 
-<Badge Color="Color.Primary"><b>@summary</b> total</Badge>
+<MudChip Color="MudBlazor.Color.Primary"><b>@summary</b> total</MudChip>
 
 @code {
 

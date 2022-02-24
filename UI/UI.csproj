@@ -8,11 +8,6 @@
 		<AssemblyName>FusionBlog.UI</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Blazorise" Version="0.9.5.3" />
-		<PackageReference Include="Blazorise.Bootstrap" Version="0.9.5.3" />
-		<PackageReference Include="Blazorise.DataGrid" Version="0.9.5.3" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.3" />
-		<PackageReference Include="Blazorise.Sidebar" Version="0.9.5.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />

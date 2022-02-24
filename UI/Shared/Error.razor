@@ -1,11 +1,12 @@
-@using Margin = Blazorise.Margin
-@using Color = Blazorise.Color
-@if (!_isClosed) {
-    <Alert Class="@CssClass" Color="@Color" Margin="Margin.Is3.OnY" Visible="true">
-        <AlertMessage>@Title</AlertMessage>
-        <AlertDescription>@ChildContent</AlertDescription>
-        <CloseButton Clicked="Close"/>
-    </Alert>
+@using MudBlazor
+@if (!_isClosed)
+{
+
+    <MudItem md="4" xs="12">
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true" Class="my-2">@Title</MudAlert>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true" Class="my-2">@ChildContent</MudAlert>
+        <MudButton OnClick="Close">Close</MudButton>
+    </MudItem>
 }
 
 @code {
@@ -13,8 +14,7 @@
 
     [Parameter]
     public string CssClass { get; set; } = "";
-    [Parameter]
-    public Color Color { get; set; } = Color.Danger;
+  
     [Parameter]
     public string Title { get; set; } = "Error:";
     [Parameter]

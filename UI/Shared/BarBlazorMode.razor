@@ -1,18 +1,18 @@
+@using MudBlazor
 @using Stl.OS
 @using System.Web
 @using System.Reflection
 @inject BlazorModeHelper _blazorModeHelper
 @inject IJSRuntime _js
 @implements IDisposable
-<BarDropdown Class="@CssClass">
-    <BarDropdownToggle>@(_isPrerendering ? "Loading..." : GetModeName(_isServerSideBlazor))</BarDropdownToggle>
-    <BarDropdownMenu RightAligned="true">
-        @foreach (var mode in new[] { true, false })
-        {
-            <BarDropdownItem Clicked="@(() => _blazorModeHelper.ChangeMode(mode))">@GetModeName(mode)</BarDropdownItem>
-        }
-    </BarDropdownMenu>
-</BarDropdown>
+
+
+<MudMenu Label="@(_isPrerendering ? "Loading..." : GetModeName(_isServerSideBlazor))">
+    @foreach (var mode in new[] { true, false })
+    {
+        <MudMenuItem OnClick="@(() => _blazorModeHelper.ChangeMode(mode))">@GetModeName(mode)>Enlist</MudMenuItem>
+    }
+</MudMenu>
 
 @code {
     private bool _isPrerendering;

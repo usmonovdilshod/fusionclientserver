@@ -1,6 +1,3 @@
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using FusionBlog.Abstractions;
 using FusionBlog.Abstractions.Clients;
 using FusionBlog.UI.Tus;
@@ -59,8 +56,7 @@ public static class StartupHelper
 
     public static void ConfigureSharedServices(IServiceCollection services)
     {
-        // Blazorise
-        services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+
         services.AddHttpClient();
         services.AddScoped<TusUploadHelper>();
         // Other UI-related services

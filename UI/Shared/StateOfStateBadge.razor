@@ -1,5 +1,4 @@
 @using Stl.Async;
-@using Margin = Blazorise.Margin
 @implements IDisposable
 @*
     StateOfStateBadge:
@@ -7,7 +6,7 @@
     - Updates on state change without re-rendering the parent component.
 *@
 
-<Div Margin="Margin.Is1.OnY">
+<div>
     <span>Component state: </span>
     @if (IsLoading) {
         <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
@@ -22,7 +21,7 @@
         <span class="oi oi-check" aria-hidden="true"></span>
         <b>In sync.</b>
     }
-</Div>
+</div>
 
 @code {
     private readonly Action<IState, StateEventKind> _stateChangedHandler;

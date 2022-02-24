@@ -1,5 +1,4 @@
-@using Margin = Blazorise.Margin
-@using Color = Blazorise.Color
+@using MudBlazor
 @inject Session _session
 @inject UICommandRunner _commandRunner
 @inject ILogger<PostItemView> _log
@@ -8,23 +7,21 @@
     _log.LogInformation("Rendering, Item = {Item}", Value);
 }
 
-<Addons Margin="Margin.Is3.OnY">
+<div style="display: flex; margin: 20px">
 
-    <TextEdit TextChanged="BlazorEventHelper.NonRendering<string>(UpdateTitle)"
-              ChangeTextOnKeyPress="false"
-              Text="@Value.Title" />
+    <MudTextField TextChanged="BlazorEventHelper.NonRendering<string>(UpdateTitle)" ChangeTextOnKeyPress="false" Value="@Value.Title" Variant="Variant.Outlined" Margin="Margin.Dense"/>
 
     @if (Value.Image is not null)
     {
-        <Image Style="width: 64px" Fluid  Source="@Value.Image"></Image>
+        <MudImage Style="width: 64px" Fluid Src="@Value.Image"></MudImage>
     }
 
-    <Addon AddonType="AddonType.End">
-        <Button Clicked="Remove" Color="Color.Warning">
-            <Blazorise.Icon Name="FontAwesomeIcons.Minus" />
-        </Button>
-    </Addon>
-</Addons>
+
+    <MudButton OnClick="Remove" Color="MudBlazor.Color.Error">
+        Remove
+    </MudButton>
+
+</div>
 
 @code {
     [Parameter, ParameterComparer(typeof(ByReferenceParameterComparer))]

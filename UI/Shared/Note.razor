@@ -1,15 +1,17 @@
-@using Color = Blazorise.Color
-@using Margin = Blazorise.Margin
-<Alert Class="@CssClass" Color="@Color" Margin="Margin.Is3.OnY" Visible="true">
-    <AlertMessage>@Title</AlertMessage>
-    <AlertDescription>@ChildContent</AlertDescription>
-</Alert>
+@using MudBlazor
+
+
+
+<MudItem md="4" xs="12">
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true" Class="my-2">@Title</MudAlert>
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true" Class="my-2">@ChildContent</MudAlert>
+</MudItem>
+
 
 @code {
     [Parameter]
     public string CssClass { get; set; } = "";
-    [Parameter]
-    public Color Color { get; set; } = Color.Primary;
+
     [Parameter]
     public string Title { get; set; } = "Note:";
     [Parameter]
